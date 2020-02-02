@@ -8,16 +8,12 @@ const RoomFilter = ({ rooms }) => {
     loading,
     handleChange,
     values,
-    // type,
-    // setType,
-    capacity,
-    price,
     minPrice,
     maxPrice,
     minSize,
     maxSize,
-    breakfast,
-    pets
+    setMinSize,
+    setMaxSize,
   } = useContext(RoomContext);
 
   const getUnique = (items, value) => [
@@ -78,6 +74,52 @@ const RoomFilter = ({ rooms }) => {
             onChange={handleChange}
             step="10"
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="size">room size</label>
+          <div className="size-inputs">
+            <input
+              type="number"
+              name="minSize"
+              id="minSize"
+              value={minSize}
+              className="size-input"
+              onChange={({ target }) => setMinSize(target.value)}
+            />
+
+            <input
+              type="number"
+              name="maxSize"
+              id="maxSize"
+              value={maxSize}
+              className="size-input"
+              onChange={({ target }) => setMaxSize(target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <div className="single-extra">
+            <input
+              type="checkbox"
+              name="breakfast"
+              id="breakfast"
+              checked={values.breakfast}
+              onChange={handleChange}
+            />
+            <label htmlFor="breakfast">breakfast</label>
+          </div>
+          <div className="single-extra">
+            <input
+              type="checkbox"
+              name="pets"
+              id="pets"
+              checked={values.pets}
+              onChange={handleChange}
+            />
+            <label htmlFor="pets">pets</label>
+          </div>
         </div>
       </form>
     </section>

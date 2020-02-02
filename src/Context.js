@@ -9,18 +9,18 @@ const RoomProvider = ({ children }) => {
   const [sortedRooms, setSortedRooms] = useState([]);
   const [featuredRooms, setFeaturedRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [minPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [minSize] = useState(0);
+  const [minSize, setMinSize] = useState(0);
   const [maxSize, setMaxSize] = useState(0);
-  const [breakfast, setBreakfast] = useState(false);
-  const [pets, setPets] = useState(false);
 
   const [values, setValues] = useState({
     type: "all",
     capacity: 1,
-    price: 0
+    price: 0,
+    breakfast: false,
+    pets: false
   });
 
   useEffect(() => {
@@ -44,14 +44,31 @@ const RoomProvider = ({ children }) => {
     if (values.type !== "all") {
       tempRooms = tempRooms.filter(room => room.type === values.type);
     }
-
     if (values.capacity !== 1) {
       tempRooms = tempRooms.filter(room => room.capacity >= values.capacity);
     }
-
     tempRooms = tempRooms.filter(room => room.price <= values.price);
+    tempRooms = tempRooms.filter(
+      room => room.size >= minSize && room.size <= maxSize
+    );
+    if (values.breakfast) {
+      tempRooms = tempRooms.filter(room => room.breakfast === true);
+    }
+    if (values.pets) {
+      tempRooms = tempRooms.filter(room => room.pets === true);
+    }
+
     setSortedRooms(tempRooms);
-  }, [rooms, values.type, values.capacity, values.price]);
+  }, [
+    rooms,
+    values.type,
+    values.capacity,
+    values.price,
+    minSize,
+    maxSize,
+    values.breakfast,
+    values.pets
+  ]);
 
   const formatData = items => {
     return items.map(item => {
@@ -67,7 +84,6 @@ const RoomProvider = ({ children }) => {
   };
 
   const handleChange = ({ target }) => {
-    console.log("target:", target);
     const { name, value, checked, type } = target;
     const isValue = type === "checkbox" ? checked : value;
 
@@ -81,15 +97,15 @@ const RoomProvider = ({ children }) => {
         sortedRooms,
         featuredRooms,
         loading,
-        getRoom,
-        handleChange,
         values,
         minPrice,
         maxPrice,
         minSize,
         maxSize,
-        breakfast,
-        pets
+        setMinSize,
+        setMaxSize,
+        getRoom,
+        handleChange
       }}
     >
       {children}
