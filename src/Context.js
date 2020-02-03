@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import items from "./data";
+// import items from "./data";
+import Client from "./contentful";
 
 const RoomContext = React.createContext();
 
@@ -24,19 +25,33 @@ const RoomProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    let rooms = formatData(items);
-    let featuredRooms = rooms.filter(room => room.featured === true);
+    const getData = async () => {
+      try {
+        let response = await Client.getEntries({
+          content_type: "beachResortRoom",
+          order: "sys.createdAt"
+          // order: "fields.price"
+        });
 
-    let maxPrice = Math.max(...rooms.map(room => room.price));
-    let maxSize = Math.max(...rooms.map(room => room.size));
+        let rooms = formatData(response.items);
+        let featuredRooms = rooms.filter(room => room.featured === true);
 
-    setValues({ ...values, price: maxPrice });
+        let maxPrice = Math.max(...rooms.map(room => room.price));
+        let maxSize = Math.max(...rooms.map(room => room.size));
 
-    setRooms(rooms);
-    setFeaturedRooms(featuredRooms);
-    setLoading(false);
-    setMaxPrice(maxPrice);
-    setMaxSize(maxSize);
+        setValues({ ...values, price: maxPrice });
+
+        setRooms(rooms);
+        setFeaturedRooms(featuredRooms);
+        setLoading(false);
+        setMaxPrice(maxPrice);
+        setMaxSize(maxSize);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getData();
   }, []);
 
   useEffect(() => {

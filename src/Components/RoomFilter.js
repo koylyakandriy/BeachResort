@@ -5,7 +5,6 @@ import { RoomContext } from "../Context";
 
 const RoomFilter = ({ rooms }) => {
   const {
-    loading,
     handleChange,
     values,
     minPrice,
